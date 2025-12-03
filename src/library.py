@@ -203,3 +203,12 @@ class Library:
 
         return user.return_book(book)
 
+    # Add methods for testing purposes
+    def get_books_count(self):
+        return len(self.__books)
+
+    def get_users_count(self):
+        return len(self.__users)
+
+    def get_books(self):
+        return list(self.__books)
