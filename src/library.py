@@ -30,7 +30,10 @@ class Book:
         self.__available = self.__available + 1
 
     def __str__(self):
-        return f"Книга: '{self.__title}', автор: {self.__author}, год: {self.__year}, доступно: {self.__available}"
+        return (
+            f"Книга: '{self.__title}', автор: {self.__author}, "
+            f"год: {self.__year}, доступно: {self.__available}"
+        )
 
 
 class PrintedBook(Book):
@@ -50,22 +53,30 @@ class PrintedBook(Book):
             self.__condition = "хорошая"
 
     def __str__(self):
-        return f"Печатная книга: '{self.get_title()}', автор: {self.get_author()}, год: {self.get_year()}, " \
-               f"страниц: {self.__pages}, состояние: {self.__condition}"
+        return (
+            "Печатная книга: "
+            f"'{self.get_title()}', автор: {self.get_author()}, "
+            f"год: {self.get_year()}, страниц: {self.__pages}, "
+            f"состояние: {self.__condition}"
+        )
 
 
 class EBook(Book):
-    def __init__(self, title, author, year, file_size, format):
+    def __init__(self, title, author, year, file_size, format_):
         super().__init__(title, author, year, 999)
         self.__file_size = file_size
-        self.__format = format
+        self.__format = format_
 
     def download(self):
         return f"Книга '{self.get_title()}' загружена"
 
     def __str__(self):
-        return f"Электронная книга: '{self.get_title()}', автор: {self.get_author()}, год: {self.get_year()}, " \
-               f"размер: {self.__file_size}MB, формат: {self.__format}"
+        return (
+            "Электронная книга: "
+            f"'{self.get_title()}', автор: {self.get_author()}, "
+            f"год: {self.get_year()}, размер: {self.__file_size}MB, "
+            f"формат: {self.__format}"
+        )
 
 
 class User:
@@ -103,146 +114,4 @@ class User:
 
 class Librarian(User):
     def __init__(self, name):
-        super().__init__(name)
-
-    def add_book(self, library, book):
-        return library.add_book(book)
-
-    def remove_book(self, library, book):
-        return library.remove_book(book)
-
-    def register_user(self, library, user):
-        return library.add_user(user)
-
-
-class Library:
-    def __init__(self):
-        self.__books = []
-        self.__users = []
-
-    def add_book(self, book):
-        self.__books.append(book)
-        return f"Книга '{book.get_title()}' добавлена в библиотеку"
-
-    def remove_book(self, book):
-        if book in self.__books:
-            self.__books.remove(book)
-            return f"Книга '{book.get_title()}' удалена из библиотеки"
-        return "Книга не найдена в библиотеке"
-
-    def add_user(self, user):
-        self.__users.append(user)
-        return f"Пользователь {user.get_name()} зарегистрирован в библиотеке"
-
-    def find_book(self, title):
-        for book in self.__books:
-            if book.get_title().lower() == title.lower():
-                return book
-        return None
-
-    def find_user(self, name):
-        for user in self.__users:
-            if user.get_name().lower() == name.lower():
-                return user
-        return None
-
-    def show_all_books(self):
-        print("Все книги в библиотеке:")
-        for book in self.__books:
-            print(f"  - {book}")
-
-    def show_available_books(self):
-        print("Доступные книги:")
-        available_found = False
-        for book in self.__books:
-            if book.is_available():
-                print(f"  - {book}")
-                available_found = True
-        if not available_found:
-            print("  Нет доступных книг")
-
-    def lend_book(self, title, user_name):
-        book = self.find_book(title)
-        user = self.find_user(user_name)
-
-        if not book:
-            return f"Книга '{title}' не найдена в библиотеке"
-        if not user:
-            return f"Пользователь '{user_name}' не зарегистрирован"
-
-        result = user.borrow(book)
-        return result
-
-    def return_book(self, title, user_name):
-        book = self.find_book(title)
-        user = self.find_user(user_name)
-
-        if not book:
-            return f"Книга '{title}' не найдена в библиотеке"
-        if not user:
-            return f"Пользователь '{user_name}' не зарегистрирован"
-
-        result = user.return_book(book)
-        return result
-
-
-if __name__ == '__main__':
-    lib = Library()
-
-    # --- создаём книги ---
-    b1 = PrintedBook("Война и мир", "Толстой", 1869, 1225, "хорошая")
-    b2 = EBook("Мастер и Маргарита", "Булгаков", 1966, 5, "epub")
-    b3 = PrintedBook("Преступление и наказание", "Достоевский", 1866, 480, "плохая")
-
-    # --- создаём пользователей ---
-    user1 = User("Анна")
-    librarian = Librarian("Мария")
-
-    # --- библиотекарь добавляет книги ---
-    print(librarian.add_book(lib, b1))
-    print(librarian.add_book(lib, b2))
-    print(librarian.add_book(lib, b3))
-
-    # --- библиотекарь регистрирует пользователя ---
-    print(librarian.register_user(lib, user1))
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- показываем все книги ---
-    lib.show_all_books()
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- показываем доступные книги ---
-    lib.show_available_books()
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- пользователь берёт книгу ---
-    print(lib.lend_book("Война и мир", "Анна"))
-
-    # --- пользователь смотрит свои книги ---
-    user1.show_books()
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- снова показываем доступные книги ---
-    lib.show_available_books()
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- возвращает книгу ---
-    print(lib.return_book("Война и мир", "Анна"))
-
-    # --- пользователь смотрит свои книги после возврата ---
-    user1.show_books()
-
-    print("\n" + "=" * 50 + "\n")
-
-    # --- электронная книга ---
-    print(b2.download())
-
-    # --- ремонт книги ---
-    print(f"\nСостояние книги до ремонта: {b3}")
-    b3.repair()
-    print(f"Состояние книги после ремонта: {b3}")
+        super().__init
